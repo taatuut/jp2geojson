@@ -11,7 +11,7 @@
 
 import exme
 
-# TODO: change to using dir and extension list
+# TODO: change to using dir and output arguments like in photos2geojson main.py
 
 for i in ['./JPEG2000/goodstuff.j2k',
             './JPEG2000//heliov.jpx',
