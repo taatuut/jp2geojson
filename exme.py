@@ -9,9 +9,9 @@ import os
 def myconverter(o):
     return o.__str__()
 
-def jp2Metadata(jp2file=None, options=None):
+def jp2Metadata(jp2file=None, path=None, options=None):
     jp2file = glymur.data.nemo() if jp2file is None else jp2file
-    path = "./Output/"
+    path = "./Results/" if path is None else path
     jp2name = jp2file.split('/')[-1]
     jp2 = glymur.Jp2k(jp2file)
     textfile = os.path.join(path,jp2name+".txt")

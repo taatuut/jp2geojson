@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 # Custom exme
+Results/*.json
+Results/*.txt
