@@ -42,7 +42,8 @@ def jp2Metadata(jp2file=None, path=None, options=None):
                 "coordinates": [
                     #dict1['lon'],
                     #dict1['lat']
-                    5,52
+                    # using WL HQ coordinates as dummy
+                    5.9956,51.1911
                 ]
             }
         }

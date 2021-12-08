@@ -7,6 +7,11 @@ https://github.com/Visgean/photos2geojson
 
 # General
 
+
+Test generated geojson online with
+
+http://geojson.io/
+
 Use the following code to generate a requirements.txt file:
 
 ```
