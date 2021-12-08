@@ -27,5 +27,25 @@ def jp2Metadata(jp2file=None, path=None, options=None):
             key = list[0]
             val = list[1:] if len(list) > 1 else ""
             dict1[key] = " ".join(val).strip()
+
+    feature_list = {
+            "type": "Feature",
+            "properties": {
+                #"date": dict1['date'].isoformat() if dict1['date'] else '',
+                "filename": dict1['File'] if dict1['File'] else '',
+                #"location": dict1['location'] if dict1['location'] else '',
+                "raw": dict1 if dict1 else ''
+            },
+
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    #dict1['lon'],
+                    #dict1['lat']
+                    5,52
+                ]
+            }
+        }
+
     with open(jsonfile, 'w') as jf:
-        jf.write(json.dumps(dict1, default = myconverter))
+        jf.write(json.dumps(feature_list, default = myconverter))

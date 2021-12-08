@@ -11,6 +11,8 @@
 
 import exme
 
+# TODO: change to using dir and extension list
+
 for i in ['./JPEG2000/goodstuff.j2k',
             './JPEG2000//heliov.jpx',
             './JPEG2000/nemo.jp2',
