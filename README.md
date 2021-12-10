@@ -1,9 +1,11 @@
 # jp2geojson
+
 Converting JPEG 2000 / JP2 metadata to geojson using Python
 
 # Inspiration
 
 https://github.com/Visgean/photos2geojson
+
 https://stackoverflow.com/questions/17858404/creating-a-tree-deeply-nested-dict-from-an-indented-text-file-in-python
 
 NOTE: Tried pyyaml but the text output is not wellformed enough for that.
