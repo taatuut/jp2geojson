@@ -4,9 +4,43 @@ Converting JPEG 2000 / JP2 metadata to geojson using Python
 # Inspiration
 
 https://github.com/Visgean/photos2geojson
+https://stackoverflow.com/questions/17858404/creating-a-tree-deeply-nested-dict-from-an-indented-text-file-in-python
+
+NOTE: Tried pyyaml but the text output is not wellformed enough for that.
+
+# Specifics
+
+## XML
+
+```
+<meta>
+
+</meta>
+
+<?xpacket begin='﻿' id='W5M0MpCehiHzreSzNTczkc9d'?>
+
+<?xpacket end='w'?>
+```
+
+## GPS 
+
+```
+GPSLatitude
+
+GPSLongitude
+
+GPSTimeStamp
+
+GPSMapDatum
+
+<ns4:GPSLatitude>42,20.56N</ns4:GPSLatitude>
+<ns4:GPSLongitude>71,5.29W</ns4:GPSLongitude>
+<ns4:GPSTimeStamp>2013-02-09T19:47:53Z</ns4:GPSTimeStamp>
+<ns4:GPSMapDatum>WGS-84</ns4:GPSMapDatum>
+```
+
 
 # General
-
 
 Test generated geojson online with
 
