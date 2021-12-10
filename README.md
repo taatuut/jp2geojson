@@ -48,6 +48,8 @@ Found so far:
 
 NOTE: not yet doing anything with GPSMapDatum.
 
+NOTE: a result map html file based on leaflet.html can be created. It does show the markers but not the images as these cannot be previewed in the browser (?). Some code tp create default markers for images without GPS info, needs some more work.
+
 # General
 
 Test generated geojson online with http://geojson.io/
