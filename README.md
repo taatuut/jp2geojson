@@ -1,6 +1,6 @@
 # jp2geojson
 
-Converting JPEG 2000 / JP2 metadata to geojson using Python
+Converting JPEG 2000 / JP2 metadata to geojson using Python.
 
 # Inspiration
 
@@ -21,7 +21,7 @@ Using the following tags to check for start and end of XML block:
 ...
 </meta>
 
-<?xpacket begin='﻿' id='W5M0MpCehiHzreSzNTczkc9d'?>
+<?xpacket begin='﻿' id='someidstringhere'?>
 ...
 <?xpacket end='w'?>
 ```
@@ -46,7 +46,7 @@ Found so far:
 <ns4:GPSMapDatum>WGS-84</ns4:GPSMapDatum>
 ```
 
-NOTE: not yet doing anything with GPSMapDatum
+NOTE: not yet doing anything with GPSMapDatum.
 
 # General
 
