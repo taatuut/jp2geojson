@@ -129,5 +129,10 @@ dmypy.json
 .pyre/
 
 # Custom exme
-Results/*.json
-Results/*.txt
+Results/*
+Results/**
+.vscode/
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store

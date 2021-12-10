@@ -1,12 +1,26 @@
-# exme.py
-
-# python3 exme.py 
-
+import datetime
 import glymur
-import json
+import glob
 import os
+import json
 import re
 import datetime
+
+picture_extensions = ['.jp2', '.j2k', '.jpx']
+
+def myconverter(o):
+    return o.__str__()
+
+def get_extension(filename):
+    filename, file_extension = os.path.splitext(filename)
+    return file_extension.lower()
+
+
+def get_pictures(directory):
+    is_img = lambda f: get_extension(f) in picture_extensions
+    files = glob.iglob(directory + '/**/*', recursive=True)
+    abs_files = map(os.path.abspath, files)
+    return list(filter(is_img, abs_files))
 
 def getLocation(candidate):
     location = {
@@ -39,9 +53,6 @@ def getTimestamp(candidate):
         result = reg_ts.search(candidate)
         ts = result.group(1).split("GPSTimeStamp>")[1].split("<")[0].split(".")[0].replace(",",".")
     return ts
-
-def myconverter(o):
-    return o.__str__()
 
 def textMe(file):
     dict = {}
@@ -109,8 +120,7 @@ def treeMe(file):
         d = root.as_dict()['root']
         return d
 
-def jp2Metadata(jp2file=None, path=None, options=None):
-    jp2file = glymur.data.nemo() if jp2file is None else jp2file
+def jp2Metadata(jp2file, path=None):
     path = "./Results/" if path is None else path
     #COULDDO: check if path exists
     jp2name = jp2file.split('/')[-1]
@@ -122,24 +132,45 @@ def jp2Metadata(jp2file=None, path=None, options=None):
     # Need to step out and reopen to persist write?
     #dict1 = treeMe(textfile)
     dict1 = textMe(textfile)
-    feature_list = {
+    parsed_data = {
+        # NOTE: assuming tag File will always be in JPEG 2000 output
+        "filename": dict1['File'] if 'File' in dict1 else '',
+        "lat": dict1['lat'] if 'lat' in dict1 else 0,
+        "lon": dict1['lon'] if 'lon' in dict1 else 0,
+        "location": dict1['location'] if 'location' in dict1 else '',
+        #"date": dict1['date'].isoformat() if 'date' in dict1 else '',
+        "date": dict1['date'] if 'date' in dict1 else '',
+    }
+    parsed_data['raw'] = dict1
+    #with open(jsonfile, 'w') as jf:
+        #jf.write(json.dumps(feature_list, default = myconverter))
+    return parsed_data
+
+def get_geojson_structure(parsed_data):
+    "parsed_data are expected to be result of parse_exif()"
+
+    feature_list = [
+        {
             "type": "Feature",
             "properties": {
-                "date": dict1['date'],
-                # NOTE: assuming tag File will always be in JPEG 2000 output
-                "filename": dict1['File'] if 'File' in dict1 else '',
-                "location": dict1['location'],
-                "raw": dict1 if dict1 else ''
+                "date": exme_dict['date'],
+                "filename": exme_dict['filename'],
+                "location": exme_dict['location'],
+                "raw": exme_dict['raw']
             },
+
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    # using OLV Amersfoort coordinates as dummy
-                    dict1['lon'],
-                    dict1['lat']
+                    exme_dict['lon'],
+                    exme_dict['lat']
                 ]
             }
         }
+        for exme_dict in parsed_data
+    ]
 
-    with open(jsonfile, 'w') as jf:
-        jf.write(json.dumps(feature_list, default = myconverter))
+    return {
+      "type": "FeatureCollection",
+      "features": feature_list
+    }
