@@ -1,11 +1,9 @@
-import glymur
+# General Python modules
 import json
 import os
-import re
-import datetime
 import argparse
-import pkg_resources
-
+#import pkg_resources
+# jp2geojson specific
 import utils
 import simple_gist
 
@@ -13,7 +11,7 @@ import simple_gist
 LEAFLET_MAP = 'leaflet.html'
 
 def main():
-    parser = argparse.ArgumentParser(description='EXIF data to gejson')
+    parser = argparse.ArgumentParser(description='JPEG 2000 metadata to gejson')
     
     parser.add_argument(
         'base_dir', 
@@ -73,7 +71,6 @@ def main():
         with open(args.leaflet, 'w') as f:
             f.write(map_with_data)
         print('Map written to', args.leaflet)
-
 
 if __name__ == '__main__':
     main()

@@ -1,12 +1,11 @@
-import datetime
 import glymur
 import glob
 import os
-import json
+#import json
 import re
-import datetime
+#import datetime
 
-picture_extensions = ['.jp2', '.j2k', '.jpx']
+picture_extensions = ['.jp2', '.j2k', '.jpx', '.jpf', '.jpm', '.jpg2', '.j2c', '.jpc', '.mj2']
 
 def myconverter(o):
     return o.__str__()
@@ -15,20 +14,19 @@ def get_extension(filename):
     filename, file_extension = os.path.splitext(filename)
     return file_extension.lower()
 
-
 def get_pictures(directory):
     is_img = lambda f: get_extension(f) in picture_extensions
     files = glob.iglob(directory + '/**/*', recursive=True)
     abs_files = map(os.path.abspath, files)
     return list(filter(is_img, abs_files))
 
-def getLocation(candidate):
+def get_location(candidate):
     location = {
             "address": "OLV Kerk, AMersfoort, Utrecht, Netherlands"
         }
     return location
 
-def getLon(candidate):
+def get_lon(candidate):
     lon = 5.3833
     reg_lon = re.compile("(.*)GPSLongitude>(.*)<(.*)")
     if bool(re.match(reg_lon, candidate)):
@@ -37,7 +35,7 @@ def getLon(candidate):
         lon = float(lon.strip(' "'))
     return lon
 
-def getLat(candidate):
+def get_lat(candidate):
     lat = 52.15
     reg_lat = re.compile("(.*)GPSLatitude>(.*)<(.*)")
     if bool(re.match(reg_lat, candidate)):
@@ -46,7 +44,7 @@ def getLat(candidate):
         lat = float(lat.strip(' "'))
     return lat
 
-def getTimestamp(candidate):
+def get_timestamp(candidate):
     ts = "1899-12-31T23:59:59"
     reg_ts = re.compile("(.*)GPSTimeStamp>(.*)<(.*)")
     if bool(re.match(reg_ts, candidate)):
@@ -54,7 +52,7 @@ def getTimestamp(candidate):
         ts = result.group(1).split("GPSTimeStamp>")[1].split("<")[0].split(".")[0].replace(",",".")
     return ts
 
-def textMe(file):
+def get_meta(file):
     dict = {}
     # NOTE: these tags end up in raw too but are not directly coming from file output...
     dict['location'] = ""
@@ -79,10 +77,10 @@ def textMe(file):
                 dict[key] = xmlbuffer
                 # NOTE: many ways this will go wrong like multiple xmlbuffers overwriting legit info with default
                 # gps info in other tags, gps info in other format... needs more investigation of the result text files
-                dict['location'] = getLocation(xmlbuffer)
-                dict['lon'] = getLon(xmlbuffer)
-                dict['lat'] = getLat(xmlbuffer)
-                dict['date'] = getTimestamp(xmlbuffer)
+                dict['location'] = get_location(xmlbuffer)
+                dict['lon'] = get_lon(xmlbuffer)
+                dict['lat'] = get_lat(xmlbuffer)
+                dict['date'] = get_timestamp(xmlbuffer)
                 xmlbuffer = ""
     return dict
 
@@ -113,7 +111,7 @@ class Node:
         else:
             return self.text
 
-def treeMe(file):
+def get_meta_alt(file):
     root = Node('root')
     with open(file) as fh:  
         root.add_children([Node(line) for line in fh])
@@ -130,8 +128,8 @@ def jp2Metadata(jp2file, path=None):
     with open(textfile, 'w+') as tf:
         tf.write(str(jp2))
     # Need to step out and reopen to persist write?
-    #dict1 = treeMe(textfile)
-    dict1 = textMe(textfile)
+    #dict1 = get_meta_alt(textfile)
+    dict1 = get_meta(textfile)
     parsed_data = {
         # NOTE: assuming tag File will always be in JPEG 2000 output
         "filename": dict1['File'] if 'File' in dict1 else '',
@@ -158,7 +156,6 @@ def get_geojson_structure(parsed_data):
                 "location": meta_dict['location'],
                 "raw": meta_dict['raw']
             },
-
             "geometry": {
                 "type": "Point",
                 "coordinates": [
@@ -169,7 +166,6 @@ def get_geojson_structure(parsed_data):
         }
         for meta_dict in parsed_data
     ]
-
     return {
       "type": "FeatureCollection",
       "features": feature_list
