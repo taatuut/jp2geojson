@@ -1,7 +1,3 @@
-# exme.py
-
-# python3 exme.py 
-
 import glymur
 import json
 import os
@@ -49,7 +45,7 @@ def main():
     full_locs = list(filter(None, map(utils.jp2Metadata, pics)))
     geojson_struct = utils.get_geojson_structure(full_locs)
 
-    print('Found', len(pics), 'pics.', len(full_locs), 'pics have exme data extracted.')
+    print('Found', len(pics), 'pics.', len(full_locs), 'pics have metadata extracted.')
 
     if args.gist:
         url = simple_gist.upload_gist('pics.geojson', json.dumps(geojson_struct))

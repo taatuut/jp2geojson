@@ -153,21 +153,21 @@ def get_geojson_structure(parsed_data):
         {
             "type": "Feature",
             "properties": {
-                "date": exme_dict['date'],
-                "filename": exme_dict['filename'],
-                "location": exme_dict['location'],
-                "raw": exme_dict['raw']
+                "date": meta_dict['date'],
+                "filename": meta_dict['filename'],
+                "location": meta_dict['location'],
+                "raw": meta_dict['raw']
             },
 
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    exme_dict['lon'],
-                    exme_dict['lat']
+                    meta_dict['lon'],
+                    meta_dict['lat']
                 ]
             }
         }
-        for exme_dict in parsed_data
+        for meta_dict in parsed_data
     ]
 
     return {

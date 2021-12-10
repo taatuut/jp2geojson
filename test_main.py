@@ -24,6 +24,6 @@ main.main()
 # For every input file a .txt and .json file in ./Output with either raw jp2 data and converted to json
 
 
-# python3 test_exme.py JPEG2000/ -o ./Results/geojson.json -l ./Results/map.html
+# python3 test_main.py JPEG2000/ -o ./Results/geojson.json -l ./Results/map.html
 
 # TODO: does it also write map.html if -l not provided? check!
