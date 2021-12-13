@@ -61,12 +61,64 @@ First text with:
 
 `exiftool -json JPEG2000/ > Results/data.json`
 
+`exiftool -json -g -struct -r /Users/emilzegers/Dropbox/Bleia/DataFit/waterschaprivierenland.nl/ > Results/waterschaprivierenland.nl.json`
+
+`exiftool -json -g -struct -r JPEG2000 > Results/JPEG2000.json`
+
+`exiftool -json -g -struct -r ~/Downloads > Results/Downloads.json`
+
+Prefer `-g` over `-G4`.
+
+For verbose output, add `-v` Output size for json goes from 569 kb to 45 Mb. Quite CPU intensive.
+
+NOTE: cannot combine verbose with json output as using verbose ignores most other options, see https://exiftool.org/exiftool_pod.html Using -v0 is not an alternative, same output as without.
+
+`exiftool -g -struct -v -r /Users/emilzegers/Dropbox/Bleia/DataFit/waterschaprivierenland.nl/ > Results/waterschaprivierenland.nl-v.txt`
+
+`exiftool -g -struct -v -r JPEG2000 > Results/JPEG2000-v.txt`
+
 to understand structure and usage.
 
 Then something like:
 
 ```
-exiftool -n -g -json -imagewidth -imageheight -composite:gpslatitude -composite:gpslongitude JPEG2000 | jq --compact-output --arg urlBase http://mysite.net/myphotos/ '{
+exiftool -n -g -ext jpg -ext jpeg -ext tif -ext tiff -ext wav -ext png -ext dcf -ext webp -ext heic -ext J2C -ext J2K -ext JPC -ext JP2 -ext JPF -ext JPM -ext JPX -json ~/Downloads | jq --compact-output --arg urlBase http://mysite.net/myphotos/ '{
+    "type": "FeatureCollection",
+    "features": 
+      map( {
+        "type": "Feature", 
+        "properties": {
+            "date": (if (.File.FileModifyDate) then .File.FileModifyDate else "1901-01-01T00:00:00Z" end),
+            "filename": .SourceFile,
+            "location": {
+                "address": (if (.Composite.GPSLongitude) then ("https://nominatim.openstreetmap.org/reverse?lat"+(.Composite.GPSLatitude|tostring)+"&lon="+(.Composite.GPSLongitude|tostring)+"&format=jsonv2") else "OLV Kerk, AMersfoort, Utrecht, Netherlands" end)
+            },
+            "exiftool": .ExifTool,
+            "file": .File,
+            "exif": .EXIF,
+            "iptc": .IPTC,
+            "pdf": .PDF,
+            "zip": .ZIP,
+            "xmp": .XMP,
+            "xml": .XML,
+            "postscript": .PostScript,
+            "jfif": .JFIF,
+            "icc_profile": .ICC_Profile,
+            "composite": .Composite,
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                if (.Composite.GPSLongitude) then .Composite.GPSLongitude else 5.3872 end,
+                if (.Composite.GPSLatitude) then .Composite.GPSLatitude else 52.1552 end
+            ]
+        }
+      } )
+  }' > Results/data.json
+
+
+
+exiftool -n -g -ext jpg -ext jpeg -ext tif -ext tiff -ext wav -ext png -ext dcf -ext webp -ext heic -ext J2C -ext J2K -ext JPC -ext JP2 -ext JPF -ext JPM -ext JPX -json -imagewidth -imageheight -composite:gpslatitude -composite:gpslongitude ~/Downloads | jq --compact-output --arg urlBase http://mysite.net/myphotos/ '{
     "type": "FeatureCollection",
     "features": 
       map( {
@@ -79,7 +131,7 @@ exiftool -n -g -json -imagewidth -imageheight -composite:gpslatitude -composite:
           "coordinates": [ .Composite.GPSLongitude, .Composite.GPSLatitude]}
       } )
   }' > Results/data.json
-  ```
+```
 
 https://adamtheautomator.com/exiftool/
 
