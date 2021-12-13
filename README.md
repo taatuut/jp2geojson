@@ -50,6 +50,37 @@ NOTE: not yet doing anything with GPSMapDatum.
 
 NOTE: a result map html file based on leaflet.html can be created. It does show the markers but not the images as these cannot be previewed in the browser (?). Some code tp create default markers for images without GPS info, needs some more work.
 
+# exiftool
+Assumes exiftool, jq
+
+Open terminal in folder `jp2geojson`
+
+First text with:
+
+`exiftool JPEG2000/ > Results/data.txt`
+
+`exiftool -json JPEG2000/ > Results/data.json`
+
+to understand structure and usage.
+
+Then somethign like:
+
+```
+exiftool -n -g -json -imagewidth -imageheight -composite:gpslatitude -composite:gpslongitude JPEG2000 | jq --compact-output --arg urlBase http://mysite.net/myphotos/ '{
+    "type": "FeatureCollection",
+    "features": 
+      map( {
+        "type": "Feature", 
+        "properties": {"url": [$urlBase,.SourceFile] | add,
+        "width": .File.ImageWidth,
+        "height": .File.ImageHeight,},
+        "geometry": {
+          "type": "Point",
+          "coordinates": [ .Composite.GPSLongitude, .Composite.GPSLatitude]}
+      } )
+  }' > Results/data.json
+  ```
+
 # General
 
 Test generated geojson online with http://geojson.io/
