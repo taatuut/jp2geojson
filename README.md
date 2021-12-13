@@ -81,8 +81,10 @@ to understand structure and usage.
 
 Then something like:
 
+~/Downloads
+
 ```
-exiftool -n -g -ext jpg -ext jpeg -ext tif -ext tiff -ext wav -ext png -ext dcf -ext webp -ext heic -ext J2C -ext J2K -ext JPC -ext JP2 -ext JPF -ext JPM -ext JPX -json ~/Downloads | jq --compact-output --arg urlBase http://mysite.net/myphotos/ '{
+exiftool -n -g -ext jpg -ext jpeg -ext tif -ext tiff -ext wav -ext png -ext dcf -ext webp -ext heic -ext J2C -ext J2K -ext JPC -ext JP2 -ext JPF -ext JPM -ext JPX -json JPEG2000 | jq --compact-output --arg urlBase http://mysite.net/myphotos/ '{
     "type": "FeatureCollection",
     "features": 
       map( {
@@ -93,18 +95,7 @@ exiftool -n -g -ext jpg -ext jpeg -ext tif -ext tiff -ext wav -ext png -ext dcf 
             "location": {
                 "address": (if (.Composite.GPSLongitude) then ("https://nominatim.openstreetmap.org/reverse?lat"+(.Composite.GPSLatitude|tostring)+"&lon="+(.Composite.GPSLongitude|tostring)+"&format=jsonv2") else "OLV Kerk, AMersfoort, Utrecht, Netherlands" end)
             },
-            "exiftool": .ExifTool,
-            "file": .File,
-            "exif": .EXIF,
-            "iptc": .IPTC,
-            "pdf": .PDF,
-            "zip": .ZIP,
-            "xmp": .XMP,
-            "xml": .XML,
-            "postscript": .PostScript,
-            "jfif": .JFIF,
-            "icc_profile": .ICC_Profile,
-            "composite": .Composite,
+            "raw": .,
         },
         "geometry": {
             "type": "Point",
