@@ -63,7 +63,7 @@ First text with:
 
 to understand structure and usage.
 
-Then somethign like:
+Then something like:
 
 ```
 exiftool -n -g -json -imagewidth -imageheight -composite:gpslatitude -composite:gpslongitude JPEG2000 | jq --compact-output --arg urlBase http://mysite.net/myphotos/ '{
@@ -80,6 +80,10 @@ exiftool -n -g -json -imagewidth -imageheight -composite:gpslatitude -composite:
       } )
   }' > Results/data.json
   ```
+
+https://adamtheautomator.com/exiftool/
+
+Support for over 23,000 tags over 130 different groups https://exiftool.org/#supported
 
 # General
 
