@@ -81,10 +81,13 @@ to understand structure and usage.
 
 Then something like:
 
-~/Downloads
+
+--arg urlbase http://mysite.net/myphotos/ 
+~/downloads
+
 
 ```
-exiftool -n -g -ext jpg -ext jpeg -ext tif -ext tiff -ext wav -ext png -ext dcf -ext webp -ext heic -ext J2C -ext J2K -ext JPC -ext JP2 -ext JPF -ext JPM -ext JPX -json JPEG2000 | jq --compact-output --arg urlBase http://mysite.net/myphotos/ '{
+exiftool -n -g -ext jpg -ext jpeg -ext jpe -ext tif -ext gif -ext bmp -ext exe -ext doc -ext docx -ext xls -ext xlsx -ext ppt -ext pptx -ext odf -ext pdf -ext bmp -ext tiff -ext wav -ext png -ext dcf -ext webp -ext heic -ext heif -ext hif -ext html -ext htm -ext xhtml -ext j2c -ext j2k -ext jpc -ext jp2 -ext jpf -ext jpm -ext jpx -json -r ~/downloads | jq --compact-output '{
     "type": "FeatureCollection",
     "features": 
       map( {
@@ -93,7 +96,7 @@ exiftool -n -g -ext jpg -ext jpeg -ext tif -ext tiff -ext wav -ext png -ext dcf 
             "date": (if (.File.FileModifyDate) then .File.FileModifyDate else "1901-01-01T00:00:00Z" end),
             "filename": .SourceFile,
             "location": {
-                "address": (if (.Composite.GPSLongitude) then ("https://nominatim.openstreetmap.org/reverse?lat"+(.Composite.GPSLatitude|tostring)+"&lon="+(.Composite.GPSLongitude|tostring)+"&format=jsonv2") else "OLV Kerk, AMersfoort, Utrecht, Netherlands" end)
+                "address": (if (.Composite.GPSLongitude) then ("https://nominatim.openstreetmap.org/reverse?lat="+(.Composite.GPSLatitude|tostring)+"&lon="+(.Composite.GPSLongitude|tostring)+"&format=jsonv2") else "OLV Kerk, AMersfoort, Utrecht, Netherlands" end)
             },
             "raw": .,
         },
@@ -104,22 +107,6 @@ exiftool -n -g -ext jpg -ext jpeg -ext tif -ext tiff -ext wav -ext png -ext dcf 
                 if (.Composite.GPSLatitude) then .Composite.GPSLatitude else 52.1552 end
             ]
         }
-      } )
-  }' > Results/data.json
-
-
-
-exiftool -n -g -ext jpg -ext jpeg -ext tif -ext tiff -ext wav -ext png -ext dcf -ext webp -ext heic -ext J2C -ext J2K -ext JPC -ext JP2 -ext JPF -ext JPM -ext JPX -json -imagewidth -imageheight -composite:gpslatitude -composite:gpslongitude ~/Downloads | jq --compact-output --arg urlBase http://mysite.net/myphotos/ '{
-    "type": "FeatureCollection",
-    "features": 
-      map( {
-        "type": "Feature", 
-        "properties": {"url": [$urlBase,.SourceFile] | add,
-        "width": .File.ImageWidth,
-        "height": .File.ImageHeight,},
-        "geometry": {
-          "type": "Point",
-          "coordinates": [ .Composite.GPSLongitude, .Composite.GPSLatitude]}
       } )
   }' > Results/data.json
 ```
