@@ -10,6 +10,10 @@ Redub to "jolly pictures to geojson" after finding `exiftool` that does a lot of
 
 https://exiftool.org/
 
+Support for over 23,000 tags over 130 different groups https://exiftool.org/#supported
+
+https://adamtheautomator.com/exiftool/
+
 https://github.com/Visgean/photos2geojson
 
 https://stackoverflow.com/questions/17858404/creating-a-tree-deeply-nested-dict-from-an-indented-text-file-in-python
@@ -24,17 +28,19 @@ Assumes exiftool, jq
 
 Open terminal in folder `jp2geojson`
 
-First text with:
+First tests:
 
-`exiftool JPEG2000/ > Results/data.txt`
+```
+exiftool JPEG2000/ > Results/data.txt
 
-`exiftool -json JPEG2000/ > Results/data.json`
+exiftool -json JPEG2000/ > Results/data.json
 
-`exiftool -json -g -struct -r /Users/emilzegers/Dropbox/Bleia/DataFit/waterschaprivierenland.nl/ > Results/waterschaprivierenland.nl.json`
+exiftool -json -g -struct -r /Users/emilzegers/Dropbox/Bleia/DataFit/waterschaprivierenland.nl/ > Results/waterschaprivierenland.nl.json
 
-`exiftool -json -g -struct -r JPEG2000 > Results/JPEG2000.json`
+exiftool -json -g -struct -r JPEG2000 > Results/JPEG2000.json
 
-`exiftool -json -g -struct -r ~/Downloads > Results/Downloads.json`
+exiftool -json -g -struct -r ~/Downloads > Results/Downloads.json
+```
 
 Prefer `-g` over `-G4`.
 
@@ -42,18 +48,15 @@ For verbose output, add `-v` Output size for json goes from 569 kb to 45 Mb. Qui
 
 NOTE: cannot combine verbose with json output as using verbose ignores most other options, see https://exiftool.org/exiftool_pod.html Using -v0 is not an alternative, same output as without.
 
+Look at results from below command to understand structure and usage.
+
 `exiftool -g -struct -v -r /Users/emilzegers/Dropbox/Bleia/DataFit/waterschaprivierenland.nl/ > Results/waterschaprivierenland.nl-v.txt`
 
 `exiftool -g -struct -v -r JPEG2000 > Results/JPEG2000-v.txt`
 
-to understand structure and usage.
-
 Then something like:
 
-
---arg urlbase http://mysite.net/myphotos/ 
-~/downloads
-
+Can use `--arg urlbase http://mysite.net/myphotos/` with `jq` but not needed here.
 
 ```
 exiftool -n -g -ext jpg -ext jpeg -ext jpe -ext tif -ext gif -ext bmp -ext exe -ext doc -ext docx -ext xls -ext xlsx -ext ppt -ext pptx -ext odf -ext pdf -ext bmp -ext tiff -ext wav -ext png -ext dcf -ext webp -ext heic -ext heif -ext hif -ext html -ext htm -ext xhtml -ext j2c -ext j2k -ext jpc -ext jp2 -ext jpf -ext jpm -ext jpx -json -r ~/downloads | jq --compact-output '{
@@ -80,13 +83,9 @@ exiftool -n -g -ext jpg -ext jpeg -ext jpe -ext tif -ext gif -ext bmp -ext exe -
   }' > Results/data.json
 ```
 
-https://adamtheautomator.com/exiftool/
-
-Support for over 23,000 tags over 130 different groups https://exiftool.org/#supported
-
 # Not exiftool...
 
-First try was DIY with Python... nice exercise, but `exiftool` does it better :-)
+First try was DIY with Python... See `main.py`. Nice exercise, but `exiftool` does it better :-)
 
 ## XML
 
