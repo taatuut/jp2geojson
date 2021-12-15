@@ -127,6 +127,8 @@ NOTE: a result map html file based on `leaflet.html` template can be created. It
 
 # General
 
+Some issues with quotes when transferring command from MacOS to Window. Use Git bash from Git for Windows Portable at https://git-scm.com/download/win 
+
 Test generated geojson online with http://geojson.io/
 
 Use the following code to generate a requirements.txt file:
