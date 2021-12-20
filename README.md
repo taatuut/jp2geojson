@@ -10,6 +10,8 @@ Redub to "jolly pictures to geojson" after finding `exiftool` that does a lot of
 
 https://exiftool.org/
 
+https://exiftool.org/exiftool_pod.html
+
 Support for over 23,000 tags over 130 different groups https://exiftool.org/#supported
 
 https://adamtheautomator.com/exiftool/
@@ -19,6 +21,10 @@ https://github.com/Visgean/photos2geojson
 https://stackoverflow.com/questions/17858404/creating-a-tree-deeply-nested-dict-from-an-indented-text-file-in-python
 
 https://gist.github.com/cquest/777faa6268d848f0a6e2
+
+https://webgeodatavore.com/jq-json-manipulation-command-line-with-geojson.html
+
+https://gist.github.com/arbakker/dd339a92f83a68c78136573d7ae08147
 
 NOTE: Also tried using `pyyaml` for this purpose but the text output is not wellformed enough for that.
 
@@ -77,6 +83,42 @@ exiftool -n -g -ext jpg -ext jpeg -ext jpe -ext tif -ext gif -ext bmp -ext exe -
             "coordinates": [
                 if (.Composite.GPSLongitude) then .Composite.GPSLongitude else 5.3872 end,
                 if (.Composite.GPSLatitude) then .Composite.GPSLatitude else 52.1552 end
+            ]
+        }
+      } )
+  }' > Results/data.json
+```
+
+All files, no print conversion. Can use `-c "%.4f degrees"` with four decimals for sufficient accuracy (more deciamls is 'false promise' for GPS generated data). 
+
+TODO:
+
+Use regex to remove special characters `/[\r\n\x0B\x0C\u0085\u2028\u2029]+/g`
+
+Round coordinates at four decimals
+
+
+//wsl-fs01.wsl.lan/4_Programma_watersysteem_en_keten/11_Ecologie
+
+```
+exiftool -n -g -json -r /Users/emilzegers/google-cloud-sdk | jq --compact-output '{
+    "type": "FeatureCollection",
+    "features": 
+      map( {
+        "type": "Feature", 
+        "properties": {
+            "date": (if (.File.FileModifyDate) then .File.FileModifyDate else "1901-01-01T00:00:00Z" end),
+            "filename": .SourceFile,
+            "location": {
+                "address": (if (.Composite.GPSLongitude) then ("https://nominatim.openstreetmap.org/reverse?lat="+(.Composite.GPSLatitude|tostring)+"&lon="+(.Composite.GPSLongitude|tostring)+"&format=jsonv2") elif (.EXIF.GPSLongitude) then ("https://nominatim.openstreetmap.org/reverse?lat="+(.EXIF.GPSLatitude|tostring)+"&lon="+(.EXIF.GPSLongitude|tostring)+"&format=jsonv2") elif (.XMP.GPSLongitude) then ("https://nominatim.openstreetmap.org/reverse?lat="+(.XMP.GPSLatitude|tostring)+"&lon="+(.XMP.GPSLongitude|tostring)+"&format=jsonv2") else "OLV Kerk, Amersfoort, Utrecht, Netherlands" end)
+            },
+            "raw": .,
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                if (.Composite.GPSLongitude) then .Composite.GPSLongitude elif (.EXIF.GPSLongitude) then .EXIF.GPSLongitude elif (.XMP.GPSLongitude) then .XMP.GPSLongitude else 5.3872 end,
+                if (.Composite.GPSLatitude) then .Composite.GPSLatitude elif (.EXIF.GPSLatitude) then .EXIF.GPSLatitude elif (.XMP.GPSLatitude) then .XMP.GPSLatitude else 52.1552 end
             ]
         }
       } )
