@@ -6,7 +6,7 @@ Redub to "jolly philes to geojson" after finding `exiftool` that does a lot of t
 
 <sup>*</sup>) Why is it that you always find somehting more useful after starting creating it yourself? Sort of rubberducking but different...
 
-NOTE: creating this to use in DataEther Data Fitness solution so setup is configured to work well with MongoDB Atlas, the data platform for Data Fitness, and part of the processing (like the rounding of coordinates, and making sure every document has custom or default coordinates to ease 2dshpere index creation) is aimed at further processing and analysing the results in Data Fitness. The general setup of metadata extraction mimics 
+NOTE: creating this to use in DataEther Data Fitness solution so setup is configured to work well with MongoDB Atlas, the data platform for Data Fitness, and part of the processing (like the rounding of coordinates, and making sure every document has custom or default coordinates to ease 2dshpere index creation) is aimed at further processing and analysing the results in Data Fitness. The general setup of metadata extraction mimics photos2geojson. 
 
 # exiftool
 
@@ -51,7 +51,7 @@ Extensions to process:
 
 NOTE: The biggest problem with Perl is its lack of support for Windows Unicode file names. https://exiftool.org/under.html
 
-All files, no print conversion. Can use `-c "%.4f degrees"` with four decimals for sufficient accuracy (more deciamls is 'false promise' for GPS generated data). Option `-c` does not go well with `-p`, use `jq` to process coordinates etc.
+All files, no print conversion. Can use `-c "%.4f degrees"` with four decimals for sufficient accuracy. Using more decimals is a 'false accuracy promise' for data with GPS coordinates). Option `-c` does not go well with `-p`, use `jq` to process coordinates etc.
 
 TIP: `history | cut -c 8-` History wothout line numbers
 
@@ -140,10 +140,9 @@ NOTE: don't use `pip freeze` for this purpose, because it saves all packages in 
 TIP: a simple but cool `curl` and `jq` test: `curl http://api.open-notify.org/iss-now.json | jq '.'` (source: https://www.baeldung.com/linux/jq-command-json)
 
 ```
-for i in *.json; do wc -l "$i"; done
 wc -l *.json
-find //wsl-fs01.wsl.lan/4_Programma_watersysteem_en_keten/ -type f -printf '.' | wc -c
-find //wsl-fs01.wsl.lan/4_Programma_watersysteem_en_keten/ -type d -printf '.' | wc -c
+find path/to/folder/with/subfolders -type f -printf '.' | wc -c
+find path/to/folder/with/subfolders -type d -printf '.' | wc -c
 ```
 
 # Inspiration
